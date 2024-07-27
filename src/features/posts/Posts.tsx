@@ -1,5 +1,6 @@
 import withLoadingAndError from "../../hoc/withLoadingAndError";
 import { useUser } from "../users/UserContext";
+import AddPost from "./AddPost";
 import { Post } from "./Post";
 import type { IPost } from "./post.type";
 import { useFetchPostsByUser } from "./postHooks";
@@ -10,16 +11,12 @@ interface PostProps {
 
 const Posts: React.FC<PostProps> = ({ posts }) => {
   return (
-    <>
-      <button>Create a new post</button> When adding a post invalidate the query
-      <ul>
+    <div style={{ width: '100%', maxWidth: 500, margin: '20px auto' }}>
+      <AddPost></AddPost>
         { posts.map(p => (
-          <li>
-            <Post post={p}></Post>
-          </li>
+            <Post key={p.id} post={p}></Post>
           ))}
-      </ul>
-    </>
+    </div>
   );
 };
 
@@ -28,7 +25,6 @@ const PostsWithLoadingAndError = withLoadingAndError(Posts);
 export const PostsContainer = () => {
   const userContext = useUser();
   const { isPending, error, data: posts } = useFetchPostsByUser(userContext?.id)
-
 
   return (
     <PostsWithLoadingAndError
