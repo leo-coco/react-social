@@ -43,9 +43,28 @@ export class BaseService<T> implements IBaseService<T>{
     }
   }
 
-  public post() {
-
+  public async post(data: Omit<T, 'id'>): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseUrl}/${this.entity}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+  
+      const responseData = await response.json();
+      return responseData;
+    } catch (error: any) {
+      console.error('Fetch error:', error);
+      throw error;
+    }
   }
+  
 
   public delete() {
 

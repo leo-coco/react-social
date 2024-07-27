@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { BaseService } from './baseService'; 
 
 export const useFetchAll = <T>(entity: string, queryParams = "") => {
@@ -20,6 +20,15 @@ export const useFetchById = <T>(entity: string, id: string) => {
     queryKey: [`${entity}-fetchById`],
     queryFn: () => service.getById(id),
   })
+};
+
+
+export const usePost = <T>(entity: string) => {
+  const service = new BaseService<T>(entity);
+
+  return useMutation({
+    mutationFn: (data: T) => service.post(data),
+  });
 };
 
 
