@@ -3,6 +3,7 @@ import withLoadingAndError from "../../hoc/withLoadingAndError";
 import type { IUser } from "./user.type";
 import { useSetUser } from "./UserContext";
 import { useFetchAllUsers } from "./userHooks";
+import { Select } from "antd";
 
 interface UsersProps {
   users: IUser[];
@@ -20,8 +21,7 @@ const Users: React.FC<UsersProps> = ({ users }) => {
     }
   }, [users, setUserContext]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const userId = event.target.value;
+  const handleChange = (userId: string) => {
     setUser(userId)
   }
 
@@ -31,14 +31,17 @@ const Users: React.FC<UsersProps> = ({ users }) => {
     }
   }, [users, setUser]);
 
-
-
   return (
-    <select name="users" id="users"  onChange={handleChange}>
-      {users.map(user => (
-        <option key={user.id} value={user.id}>{user.name}</option>
-      ))}
-    </select>
+    <Select
+      defaultValue={users[0]?.name}
+      onChange={handleChange}
+      options={users.map(user => ({
+        id: user.id,
+        value: user.id.toString(),
+        label: user.name,
+      }))}
+    >
+    </Select>
   );
 };
 
@@ -47,8 +50,6 @@ const UsersWithLoadingAndError = withLoadingAndError(Users);
 
 export const UsersContainer = () => {
   const { isPending, error, data: users } = useFetchAllUsers()
-
-  
 
   return (
     <UsersWithLoadingAndError
