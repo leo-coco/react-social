@@ -1,0 +1,27 @@
+.comment {
+  display: flex;
+  align-items: flex-start;
+  background: #f0f2f5;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.comment-avatar {
+  margin-right: 12px;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-author {
+  font-weight: bold;
+  color: #1c1e21;
+}
+
+.comment-body {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #606770;
+}
