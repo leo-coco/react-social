@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import "./App.css"
 
 import {
   QueryClient,
@@ -18,8 +17,8 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
+            <Route index element={<PostsContainer />} /> {/* Default route */}
             <Route path="/albums" element={<AlbumsContainer />} />
-            <Route path="/posts" element={<PostsContainer />} />
           </Route>
         </Routes>
       </BrowserRouter>
