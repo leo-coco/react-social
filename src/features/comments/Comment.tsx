@@ -3,7 +3,11 @@ import { Avatar } from 'antd';
 import './Comment.css';
 import type { IComment } from './comment.type';
 
-export const Comment: React.FC<IComment> = ({ comment }) => {
+interface CommentProps {
+  comment: IComment;
+}
+
+export const Comment: React.FC<CommentProps> = ({ comment }) => {
   return (
     <div className="comment">
       <Avatar
