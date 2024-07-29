@@ -9,7 +9,6 @@ export const useFetchAll = <T>(entity: string, queryParams = "") => {
   return useQuery({
     queryKey: [queryKey],
     queryFn: () => service.getAll(queryParams),
-    staleTime: 50000,
   })
 };
 

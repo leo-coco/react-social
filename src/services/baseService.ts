@@ -67,15 +67,15 @@ export class BaseService<T> implements IBaseService<T>{
   
 
   public delete() {
-
+    // EMPTY
   }
 
   public patch() {
-
+    // EMPTY
   }
 
   public put () {
-
+    // EMPTY
   }
 
 }
