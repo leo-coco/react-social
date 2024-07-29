@@ -12,9 +12,6 @@ const Header: React.FC = () => {
         <Menu.Item key="1">
           <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="2">
-          <Link to="/albums">Albums</Link>
-        </Menu.Item>
         <Menu.Item key="3" >
       <UsersContainer />
       </Menu.Item>
