@@ -3,19 +3,19 @@ import { useState } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { usePost } from '../../services/baseHooks';
 import { useUser } from '../users/UserContext';
-import { useQueryClient } from '@tanstack/react-query';
 import type { IComment } from './comment.type';
 
 const { TextArea } = Input;
 
 interface AddCommentModalProps {
   postId: string;
+  onSuccess: (newComment: IComment) => void;
+  onClose: () => void;
 }
 
-const AddCommentModal: React.FC<AddCommentModalProps> = ({postId}) => {
+const AddCommentModal: React.FC<AddCommentModalProps> = ({postId, onSuccess, onClose}) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
   const userContext = useUser();
-  const queryClient = useQueryClient();
 
   const { mutate: createComment } = usePost<IComment>('comments');
 
@@ -29,10 +29,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId}) => {
 
     createComment(newComment, {
       onSuccess: (newComment: IComment) => {
-        // We add the new comment to the cache as the API is a mock one
-        queryClient.setQueryData([`comments-fetchAll-postId=${postId}&_limit=1`], (oldData: IComment[]) => {
-          return [newComment, ...(oldData || [])];
-        });
+        onSuccess(newComment);
         setIsModalVisible(false);
       },
       onError: (error) => {
@@ -42,6 +39,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId}) => {
   }
 
   const handleCancel = () => {
+    onClose();
     setIsModalVisible(false);
   };
 
@@ -62,7 +60,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId}) => {
             name="body"
             rules={[{ required: true, message: 'Please enter the comment content!' }]}
           >
-            <TextArea rows={4} placeholder="Enter your post comment..." />
+            <TextArea rows={2} placeholder="Enter your post comment..." />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>
