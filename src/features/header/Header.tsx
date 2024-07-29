@@ -12,11 +12,10 @@ const Header: React.FC = () => {
         <Menu.Item key="1">
           <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="3" >
-      <UsersContainer />
-      </Menu.Item>
+        <div style={{ marginLeft: 'auto' }}>
+        Logged in as: <UsersContainer />
+      </div>
       </Menu>
-
     </AntHeader>
   );
 }
