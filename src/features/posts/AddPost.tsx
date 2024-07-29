@@ -8,7 +8,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const { TextArea } = Input;
 
-
 const AddPostModal: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const userContext = useUser();
@@ -63,7 +62,7 @@ const AddPostModal: React.FC = () => {
         >
           <Form.Item
             name="title"
-            rules={[{ required: true, message: 'Please enter the Title' }]}
+            rules={[{ required: true, message: 'Please enter a title' }]}
           >
             <Input placeholder="Enter title" />
           </Form.Item>

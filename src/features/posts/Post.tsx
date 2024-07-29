@@ -4,6 +4,7 @@ import { Card, Button } from 'antd';
 import { LikeOutlined, LikeFilled, CommentOutlined } from '@ant-design/icons';
 import type { IPost } from './post.type';
 import { Comments } from '../comments/Comments';
+import AddCommentModal from '../comments/AddComment';
 
 const { Meta } = Card;
 
@@ -13,9 +14,14 @@ interface PostProps {
 
 export const Post: React.FC<PostProps> = ({ post }) => {
   const [liked, setLiked] = useState(false); 
+  const [showComment, setShowComment] = useState(false); 
 
   const handleLike = () => {
     setLiked(prevLiked => !prevLiked);
+  };
+
+  const handleComment = () => {
+    setShowComment(prevShowComment => !prevShowComment);
   };
 
   return (
@@ -31,8 +37,8 @@ export const Post: React.FC<PostProps> = ({ post }) => {
             Like
           </Button>,
           <Button
-            disabled={true}
             key="comments"
+            onClick={handleComment}
             icon={<CommentOutlined />}
           >
             Comment
@@ -47,6 +53,8 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       <Card>
       <Comments postId={post.id} />
       </Card>
+
+      {showComment && <AddCommentModal postId={post.id}></AddCommentModal>}
      
     </div>
   );
