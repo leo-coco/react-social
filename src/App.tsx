@@ -7,6 +7,7 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Layout from "./features/layout/Layout"
 import { PostsContainer } from "./features/posts/Posts"
+import ChatApp from "./features/chat/Chat"
 
 const queryClient = new QueryClient()
 
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<PostsContainer />} /> {/* Default route */}
+            <Route path="/chat" element={<ChatApp />} /> {/* Default route */}
           </Route>
         </Routes>
       </BrowserRouter>

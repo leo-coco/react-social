@@ -12,6 +12,9 @@ const Header: React.FC = () => {
         <Menu.Item key="1">
           <Link to="/">Home</Link>
         </Menu.Item>
+        <Menu.Item key="2">
+          <Link to="/chat">Chat</Link>
+        </Menu.Item>
         <div style={{ marginLeft: 'auto' }}>
         Logged in as: <UsersContainer />
       </div>
