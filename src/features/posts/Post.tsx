@@ -8,6 +8,7 @@ import AddCommentModal from '../comments/AddCommentModal';
 import { useFetchCommentsByPost } from '../comments/commentHook';
 import { useQueryClient } from '@tanstack/react-query';
 import type { IComment } from '../comments/comment.type';
+import { Like } from '../likes/Like';
 
 const { Meta } = Card;
 
@@ -16,7 +17,7 @@ interface PostProps {
 }
 
 export const Post: React.FC<PostProps> = ({ post }) => {
-  const [liked, setLiked] = useState(false); 
+
   const [showComment, setShowComment] = useState(false); 
   const [enableAllComment, setEnableAllComment] = useState(true); 
   const queryClient = useQueryClient();
@@ -29,9 +30,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     setEnableAllComment(false);
   };
 
-  const handleLike = () => {
-    setLiked(prevLiked => !prevLiked);
-  };
+ 
 
 
   const handleComment = () => {
@@ -56,14 +55,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     <div style={{ width: '100%', maxWidth: 500, margin: '20px auto' }}>
       <Card
         actions={[
-          <Button
-            key="like"
-            icon={liked ? <LikeFilled /> : <LikeOutlined />}
-            onClick={handleLike}
-            type={liked ? 'primary' : 'default'} 
-          >
-            Like
-          </Button>,
+          <Like postId={post.id}></Like>,
           <Button
             key="comments"
             onClick={handleComment}
