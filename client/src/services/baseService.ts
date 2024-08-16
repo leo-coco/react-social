@@ -7,14 +7,16 @@ export interface IBaseService<T> {
 
 
 export class BaseService<T> implements IBaseService<T>{
-  private baseUrl = 'https://jsonplaceholder.typicode.com';
-  private entity = '';
+  protected baseUrl = '';
+  protected entity = '';
 
   constructor (pEntity: string) {
       this.entity = pEntity;
+      this.baseUrl = import.meta.env.VITE_API_BASE_URL;
   }
   public async getAll(queryParams?: string): Promise<T[]> {
     try {
+      console.log(this.baseUrl)
       const url = queryParams ? `${this.baseUrl}/${this.entity}?${queryParams}` : `${this.baseUrl}/${this.entity}`;
       const response = await fetch(url);
       if (!response.ok) {

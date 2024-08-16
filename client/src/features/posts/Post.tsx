@@ -1,14 +1,14 @@
 import type React from 'react';
 import { useState } from 'react';
 import { Card, Button, Skeleton } from 'antd';
-import { LikeOutlined, LikeFilled, CommentOutlined, EyeOutlined } from '@ant-design/icons';
+import { CommentOutlined, EyeOutlined } from '@ant-design/icons';
 import type { IPost } from './post.type';
 import { Comments } from '../comments/Comments';
 import AddCommentModal from '../comments/AddCommentModal';
-import { useFetchCommentsByPost } from '../comments/commentHook';
 import { useQueryClient } from '@tanstack/react-query';
 import type { IComment } from '../comments/comment.type';
 import { Like } from '../likes/Like';
+import { useFetchPostComments } from './postHooks';
 
 const { Meta } = Card;
 
@@ -21,8 +21,8 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   const [showComment, setShowComment] = useState(false); 
   const [enableAllComment, setEnableAllComment] = useState(true); 
   const queryClient = useQueryClient();
-  const [limit, setLimit] = useState(1);
-  const { isPending, error, data: comments } = useFetchCommentsByPost(post.id, limit)
+  const [limit, setLimit] = useState(2);
+  const { isPending, error, data: comments } = useFetchPostComments(post.id, limit)
 
   // If a comment has done added manually, and user click view all. The added comment will disapear due to the mock API
   const handleLoadMore = () => {
@@ -75,7 +75,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       >
         <Meta
           title={post.title}
-          description={post.body}
+          description={post.content}
         />
       </Card>
       <Card>

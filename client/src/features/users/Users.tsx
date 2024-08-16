@@ -14,12 +14,12 @@ interface UsersProps {
 export const Users: React.FC<UsersProps> = ({ users, onChange }) => {
   return (
     <Select
-      defaultValue={users[0]?.name}
+      defaultValue={users[0]?.firstName}
       onChange={onChange}
       options={users.map(user => ({
         id: user.id,
         value: user.id.toString(),
-        label: user.name,
+        label: user.firstName,
       }))}
     >
     </Select>
