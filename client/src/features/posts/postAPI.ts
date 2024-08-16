@@ -15,7 +15,7 @@ export class PostService extends BaseService<IPost> {
 
   public async getComments(postId: string, limit: number): Promise<IComment[]> {
     try {
-      const response = await fetch( `${this.baseUrl}/${this.entity}/${postId}/comments`);
+      const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/comments`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }

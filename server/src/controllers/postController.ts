@@ -9,9 +9,13 @@ export class PostController {
     this.service = service;
   }
 
-  public getPosts = async (_: Request, res: Response) => {
-    const posts = await this.service.getAllPosts();
-    res.json(posts);
+  public getPosts = async (req: Request, res: Response) => {
+    const userId = req.query['userId'] as string | undefined;
+    if (userId) {
+      const posts = await this.service.getAllPosts(parseInt(userId));
+      res.json(posts);
+    }
+  
   }
 
   public createPost = async (req: Request, res: Response) => {

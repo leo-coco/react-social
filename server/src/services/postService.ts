@@ -3,18 +3,18 @@ import type { Post, Prisma, Comment } from "@prisma/client";
 
 
 export interface IPostService {
-  getAllPosts(): Promise<Post[]>
+  getAllPosts(userId: number): Promise<Post[]>
   createPost(data: any): Promise<Post>
   getComments(postId: number, limit?: number): Promise<Comment[]>
 }
 
 export class PostService implements IPostService {
 
-  public async getAllPosts() {
+  public async getAllPosts(userId: number) {
     return await prisma.post.findMany({
-      include: {
-        user: true,
-      }
+      where: {
+        userId: userId,
+      },
     });
   }
 
