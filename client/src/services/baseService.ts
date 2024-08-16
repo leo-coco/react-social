@@ -1,3 +1,4 @@
+import type { ResponseError } from "../../types/error";
 
 
 export interface IBaseService<T> {
@@ -16,12 +17,11 @@ export class BaseService<T> implements IBaseService<T>{
   }
   public async getAll(queryParams?: string): Promise<T[]> {
     try {
-      console.log(this.baseUrl)
       const url = queryParams ? `${this.baseUrl}/${this.entity}?${queryParams}` : `${this.baseUrl}/${this.entity}`;
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+        await this.handleError(response);
+       }
       const data = await response.json();
       return data;
     } catch (error: any) {
@@ -35,8 +35,8 @@ export class BaseService<T> implements IBaseService<T>{
     try {
       const response = await fetch( `${this.baseUrl}/${this.entity}/${id}`);
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+        await this.handleError(response);
+       }
       const data = await response.json();
       return data;
     } catch (error: any) {
@@ -56,15 +56,23 @@ export class BaseService<T> implements IBaseService<T>{
       });
   
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+       await this.handleError(response);
       }
-  
+
       const responseData = await response.json();
       return responseData;
+
     } catch (error: any) {
       console.error('Fetch error:', error);
       throw error;
     }
+  }
+
+  private async handleError(response: any) {
+    const errorResponse = await response.json();
+    const errorMessage = errorResponse.message || `Error: ${errorResponse.status} ${errorResponse.statusText}`;
+    const errorDetails = errorResponse.error || null;
+    throw new Error(errorMessage, {cause: errorDetails});
   }
   
 

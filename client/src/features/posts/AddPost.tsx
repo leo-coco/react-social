@@ -5,13 +5,18 @@ import { usePost } from '../../services/baseHooks';
 import type { IPost } from './post.type';
 import { useUser } from '../users/UserContext';
 import { useQueryClient } from '@tanstack/react-query';
+import useNotification from '../../hooks/useNotification';
+
 
 const { TextArea } = Input;
 
 const AddPostModal: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const userContext = useUser();
   const queryClient = useQueryClient();
+
+  const { openNotification } = useNotification();
 
   const { mutate: createPost } = usePost<IPost>('posts');
 
@@ -20,22 +25,22 @@ const AddPostModal: React.FC = () => {
   };
 
   const handleSubmit = async (values: { title: string, body: string }) => {
+    setIsLoading(true);
     const newPost = {
       userId: userContext?.id,
       title: values.title,
-      body: values.body,
+      content: values.body,
     } as IPost;
 
     createPost(newPost, {
       onSuccess: (newPost: IPost) => {
-        // We add the new post to the cache as the API is a mock one
-        queryClient.setQueryData([`posts-fetchAll-userId=${userContext?.id}`], (oldData: IPost[]) => {
-          return [newPost, ...(oldData || [])];
-        });
+        queryClient.invalidateQueries({ queryKey: [`posts-fetchAll-userId=${userContext?.id}`] })
+        setIsLoading(false);
         setIsModalVisible(false);
       },
       onError: (error) => {
-        console.error('Error posting the new post:', error);
+        setIsLoading(false);
+        openNotification('error', error.message)
       },
     });
   }
@@ -53,7 +58,7 @@ const AddPostModal: React.FC = () => {
         title="What do you want to share?"
         open={isModalVisible}
         onCancel={handleCancel}
-        footer={null} // Hide default footer
+        footer={null}
       >
         <Form
           layout="vertical"
@@ -73,7 +78,7 @@ const AddPostModal: React.FC = () => {
             <TextArea rows={4} placeholder="Enter your post here..." />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button loading={isLoading} type="primary" htmlType="submit" block>
               Add Post
             </Button>
           </Form.Item>

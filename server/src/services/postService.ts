@@ -1,5 +1,7 @@
 import { prisma } from '../db/prisma'
-import type { Post, Prisma, Comment } from "@prisma/client";
+import type { Prisma} from "@prisma/client";
+import type { Post, Comment } from "@prisma/client";
+import { BaseService } from './baseService';
 
 
 export interface IPostService {
@@ -8,7 +10,7 @@ export interface IPostService {
   getComments(postId: number, limit?: number): Promise<Comment[]>
 }
 
-export class PostService implements IPostService {
+export class PostService extends BaseService implements IPostService {
 
   public async getAllPosts(userId: number) {
     return await prisma.post.findMany({
@@ -19,9 +21,13 @@ export class PostService implements IPostService {
   }
 
   public async createPost(data: Prisma.PostCreateInput) {
-    return await prisma.post.create({
-      data,
-    });
+    try {
+      return await prisma.post.create({
+        data,
+      });
+    } catch (e) {
+      throw this.handlePrismaError(e)
+    }
   }
 
   public async getComments(postId: number, limit = 10) {
