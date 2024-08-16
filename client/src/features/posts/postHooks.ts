@@ -3,7 +3,7 @@ import { useFetchAll } from "../../services/baseHooks";
 import type { IPost } from "./post.type";
 import { PostService } from "./postAPI";
 
-export const useFetchPostsByUser = (userId: string) => {
+export const useFetchPostsByUser = (userId: number) => {
   return useFetchAll<IPost>('posts', `userId=${userId}`);
 };
 

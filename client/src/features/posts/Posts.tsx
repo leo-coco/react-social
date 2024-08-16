@@ -1,4 +1,5 @@
 import withLoadingAndError from "../../hoc/withLoadingAndError";
+import type { IUser } from "../users/user.type";
 import { useUser } from "../users/UserContext";
 import AddPost from "./AddPost";
 import { Post } from "./Post";
@@ -7,6 +8,10 @@ import { useFetchPostsByUser } from "./postHooks";
 
 interface PostProps {
   posts: IPost[];
+}
+
+interface PostsInternalContainerProps {
+  userContext: IUser;
 }
 
 const Posts: React.FC<PostProps> = ({ posts }) => {
@@ -22,15 +27,27 @@ const Posts: React.FC<PostProps> = ({ posts }) => {
 
 const PostsWithLoadingAndError = withLoadingAndError(Posts);
 
-export const PostsContainer = () => {
-  const userContext = useUser();
-  const { isPending, error, data: posts } = useFetchPostsByUser(userContext?.id)
+export const noUserContext = () => {
+  return <div></div>;
+}
+
+export const PostsInternalContainer: React.FC<PostsInternalContainerProps>= ({ userContext }) => {
+  const { isPending, error, data: posts } = useFetchPostsByUser(userContext?.id);
 
   return (
     <PostsWithLoadingAndError
-    isPending={isPending}
-    error={error}
-    posts={posts || []}
+      isPending={isPending}
+      error={error}
+      posts={posts || []}
     />
-  )
+  );
+}
+export const PostsContainer = () => {
+  const userContext = useUser();
+
+  if (!userContext?.id) {
+    return noUserContext();
+  }
+
+  return <PostsInternalContainer userContext={userContext} />;
 }
