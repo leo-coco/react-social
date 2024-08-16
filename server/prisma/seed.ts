@@ -47,7 +47,7 @@ async function seed() {
           data: {
             content: faker.lorem.sentence(),
             postId: post.id,
-            userId: user.id,
+            userId: users[faker.number.int({ min: 0, max: users.length - 1 })].id,
           },
         });
       }

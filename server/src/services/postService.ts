@@ -24,7 +24,7 @@ export class PostService implements IPostService {
     });
   }
 
-  public async getComments(postId: number, limit = 1) {
+  public async getComments(postId: number, limit = 10) {
     return await prisma.comment.findMany({
       include: {
         user: {
