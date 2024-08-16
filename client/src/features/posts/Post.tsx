@@ -24,7 +24,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   const [limit, setLimit] = useState(2);
   const { isPending, error, data: comments } = useFetchPostComments(post.id, limit)
 
-  // If a comment has done added manually, and user click view all. The added comment will disapear due to the mock API
+
   const handleLoadMore = () => {
     setLimit(100); // Assume no more than 100 comments in our example
     setEnableAllComment(false);
@@ -63,7 +63,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           </Button>,
           <Button
           key="more"
-          disabled={!enableAllComment}
+          disabled={!enableAllComment || comments?.length === 0}
           onClick={handleLoadMore}
           icon={<EyeOutlined/>}
         >
