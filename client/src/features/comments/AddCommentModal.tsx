@@ -25,6 +25,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId, onSuccess, onC
   const addComment = useMutation({
     mutationFn: (newComment: AddCommentPayload) => {
       const service = new PostService();
+      setIsLoading(true);
       return service.addComment(newComment.postId, newComment.userId, newComment.content);
     },
     onSuccess: (data: IComment) => {

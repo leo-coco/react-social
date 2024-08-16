@@ -12,5 +12,6 @@ router.get('/', controller.getPosts);
 router.post('/', controller.createPost);
 router.get('/:postId/comments', controller.getComments);
 router.post('/:postId/comments', controller.addComment);
+router.post('/:postId/like', controller.like);
 
 export default router;

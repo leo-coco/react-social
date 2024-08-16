@@ -1,23 +1,47 @@
 import { Button } from "antd";
 import { LikeOutlined, LikeFilled } from '@ant-design/icons';
-import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useEffect, useState } from "react";
 
-import { selectLikes, likeAsync } from "./likesSlice";
+import { useMutation } from "@tanstack/react-query";
+import { PostService } from "../posts/postAPI";
+import { useUser } from "../users/UserContext";
+import useNotification from "../../hooks/useNotification";
 
 interface LikeProps {
   postId: string;
+  count: number;
+  hasLiked: boolean;
 }
 
-export const Like: React.FC<LikeProps> = ({postId}) => {
-  const dispatch = useAppDispatch()
-  const likes = useAppSelector(selectLikes)
+export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
+  const userContext = useUser();
+  const { openNotification } = useNotification();
 
   const [liked, setLiked] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false); 
+
+  useEffect(() => {
+    setLiked(hasLiked);
+  }, [hasLiked]);
+
+  const likePost = useMutation({
+    mutationFn: ({ postId, userId }: { postId: string; userId: number }) => {
+      const service = new PostService();
+      setIsLoading(true);
+      return service.like(postId, userId);
+    },
+    onSuccess: (data: any) => {
+      setLiked(prevLiked => !prevLiked);
+      setIsLoading(false);
+    },
+    onError: (error: any) => {
+      setIsLoading(false);
+      openNotification('error', error.message);
+    },
+  });
   
   const handleLike = (postId: string) => {
-    setLiked(prevLiked => !prevLiked);
-    dispatch(likeAsync(postId))
+    likePost.mutate({ postId, userId: userContext?.id });
   };
 
 
@@ -25,11 +49,12 @@ export const Like: React.FC<LikeProps> = ({postId}) => {
   return (
     <Button
       key="like"
+      loading={isLoading}
       icon={liked ? <LikeFilled /> : <LikeOutlined />}
       onClick={() => handleLike(postId)}
       type={liked ? 'primary' : 'default'} 
     >
-     Like {likes(postId)}
+     Like {count}
     </Button>
   );
 }

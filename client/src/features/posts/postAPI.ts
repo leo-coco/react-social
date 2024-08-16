@@ -48,4 +48,26 @@ export class PostService extends BaseService<IPost> {
       throw error;
     }
   }
+
+  public async like(postId: string, userId: number)  {
+    try {
+      const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId}),
+      });
+
+      if (!response.ok) {
+        await this.handleError(response);
+       }
+
+      const data = await response.json();
+      return data;
+    } catch (error: any) {
+      console.error('Fetch error:', error);
+      throw error;
+    }
+  }
 }

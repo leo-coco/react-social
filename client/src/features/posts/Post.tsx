@@ -2,7 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { Card, Button, Skeleton } from 'antd';
 import { CommentOutlined, EyeOutlined } from '@ant-design/icons';
-import type { IPost } from './post.type';
+import type { PostWithDetails } from './post.type';
 import { Comments } from '../comments/Comments';
 import AddCommentModal from '../comments/AddCommentModal';
 import { useQueryClient } from '@tanstack/react-query';
@@ -13,11 +13,10 @@ import { useFetchPostComments } from './postHooks';
 const { Meta } = Card;
 
 interface PostProps {
-  post: IPost;
+  post: PostWithDetails;
 }
 
 export const Post: React.FC<PostProps> = ({ post }) => {
-
   const [showComment, setShowComment] = useState(false); 
   const [enableAllComment, setEnableAllComment] = useState(true); 
   const queryClient = useQueryClient();
@@ -31,8 +30,6 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   };
 
  
-
-
   const handleComment = () => {
     setShowComment(prevShowComment => !prevShowComment);
   };
@@ -46,14 +43,14 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     queryClient.setQueryData(['posts', post.id, 'comments', limit ], (oldData: IComment[]) => {
       return [newComment, ...(oldData || [])];
     });
-    
+
   };
 
   return (
     <div style={{ width: '100%', maxWidth: 500, margin: '20px auto' }}>
       <Card
         actions={[
-          <Like postId={post.id}></Like>,
+          <Like postId={post.id} count={post.likeCount} hasLiked={post.hasLiked}></Like>,
           <Button
             key="comments"
             onClick={handleComment}

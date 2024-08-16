@@ -2,6 +2,18 @@ import type { Request, Response } from 'express';
 import type { IPostService } from '../services/postService';
 import { BaseController } from './baseController.ts';
 
+
+export type PostWithDetails = {
+  id: number;
+  title: string;
+  content: string;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  hasLiked: boolean;
+  likeCount: number;
+};
+
 export class PostController extends BaseController {
   private service: IPostService;
 
@@ -14,14 +26,24 @@ export class PostController extends BaseController {
     const userId = req.query['userId'] as string | undefined;
     if (userId) {
       try {
-        const posts = await this.service.getAllPosts(parseInt(userId));
-        res.json(posts);
+        const posts = await this.service.getAllPostsWithDetails(parseInt(userId));
+        
+        const postsWithDetails: PostWithDetails[] = posts.map(post => ({
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          userId: post.userId,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          hasLiked: post.likes.length > 0,
+          likeCount: post._count.likes,
+        }));
+        res.json(postsWithDetails);
       }
       catch (e: unknown) {
         this.returnPrismaError(res, e, 'Error getting posts');
       }
     }
-
   }
 
   public createPost = async (req: Request, res: Response) => {
@@ -73,7 +95,36 @@ export class PostController extends BaseController {
         res.json(comment);
       }
       catch (e: unknown) {
-        this.returnPrismaError(res, e, 'Error getting comments');
+        this.returnPrismaError(res, e, 'Error adding a comment');
+      }
+    }
+  }
+
+  public getLikes = async (req: Request, res: Response) => {
+    const postId = req.params['postId'];
+
+    if (postId) {
+      try {
+        const likes = await this.service.getLikes(parseInt(postId));
+        res.json(likes);
+      }
+      catch (e: unknown) {
+        this.returnPrismaError(res, e, 'Error getting likes');
+      }
+    }
+  }
+
+  public like = async (req: Request, res: Response) => {
+    const postId = req.params['postId'];
+    const userId = req.body['userId'];
+
+    if (postId && userId) {
+      try {
+        const likes = await this.service.like(parseInt(postId), userId);
+        res.json(likes);
+      }
+      catch (e: unknown) {
+        this.returnPrismaError(res, e, 'Error liking a post');
       }
     }
   }
