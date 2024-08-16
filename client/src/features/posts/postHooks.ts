@@ -11,7 +11,7 @@ export const useFetchPostComments = (postId: string, limit = 0) => {
     const service = new PostService(); 
 
     return useQuery({
-      queryKey: [`comments-post-${postId}-limit-${limit}`],
+      queryKey: ['posts', postId, 'comments', limit],
       queryFn: () => service.getComments(postId, limit),
     })
 };

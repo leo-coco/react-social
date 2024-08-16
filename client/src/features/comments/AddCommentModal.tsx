@@ -1,9 +1,11 @@
 import type React from 'react';
 import { useState } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
-import { usePost } from '../../services/baseHooks';
 import { useUser } from '../users/UserContext';
-import type { IComment } from './comment.type';
+import type { AddCommentPayload, IComment } from './comment.type';
+import useNotification from '../../hooks/useNotification';
+import { PostService } from '../posts/postAPI';
+import { useMutation } from '@tanstack/react-query';
 
 const { TextArea } = Input;
 
@@ -15,28 +17,38 @@ interface AddCommentModalProps {
 
 const AddCommentModal: React.FC<AddCommentModalProps> = ({postId, onSuccess, onClose}) => {
   const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const userContext = useUser();
 
-  const { mutate: createComment } = usePost<IComment>('comments');
+  const { openNotification } = useNotification();
 
+  const addComment = useMutation({
+    mutationFn: (newComment: AddCommentPayload) => {
+      const service = new PostService();
+      return service.addComment(newComment.postId, newComment.userId, newComment.content);
+    },
+    onSuccess: (data: IComment) => {
+      onSuccess(data);
+      setIsLoading(false);
+      setIsModalVisible(false);
+    },
+    onError: (error: any) => {
+      setIsLoading(false);
+      openNotification('error', error.message);
+    },
+  });
+  
   const handleSubmit = async (values: { body: string }) => {
     const newComment = {
-      email: userContext?.email,
-      postId: postId,
-      name: '',
-      body: values.body,
-    } as IComment;
-
-    createComment(newComment, {
-      onSuccess: (newComment: IComment) => {
-        onSuccess(newComment);
-        setIsModalVisible(false);
-      },
-      onError: (error) => {
-        console.error('Error posting the new comment:', error);
-      },
-    });
+      postId,
+      userId: userContext?.id,
+      content: values.body,
+    } as AddCommentPayload;
+  
+   
+    addComment.mutate(newComment);
   }
+  
 
   const handleCancel = () => {
     onClose();
@@ -49,7 +61,7 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId, onSuccess, onC
         title="What do you want to share?"
         open={isModalVisible}
         onCancel={handleCancel}
-        footer={null} // Hide default footer
+        footer={null}
       >
         <Form
           layout="vertical"
@@ -58,12 +70,12 @@ const AddCommentModal: React.FC<AddCommentModalProps> = ({postId, onSuccess, onC
         >
           <Form.Item
             name="body"
-            rules={[{ required: true, message: 'Please enter the comment content!' }]}
+            rules={[{ required: false, message: 'Please enter the comment content' }]}
           >
-            <TextArea rows={2} placeholder="Enter your post comment..." />
+            <TextArea rows={2} placeholder="Enter your comment..." />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+          <Button loading={isLoading} type="primary" htmlType="submit" block>
               Add comment
             </Button>
           </Form.Item>

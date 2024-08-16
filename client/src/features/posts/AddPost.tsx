@@ -34,7 +34,9 @@ const AddPostModal: React.FC = () => {
 
     createPost(newPost, {
       onSuccess: (newPost: IPost) => {
-        queryClient.invalidateQueries({ queryKey: [`posts-fetchAll-userId=${userContext?.id}`] })
+        queryClient.setQueryData(['posts', `userId=${userContext?.id}` ], (oldData: IPost[]) => {
+          return [newPost, ...(oldData || [])];
+        });
         setIsLoading(false);
         setIsModalVisible(false);
       },

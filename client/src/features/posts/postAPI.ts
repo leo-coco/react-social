@@ -15,10 +15,32 @@ export class PostService extends BaseService<IPost> {
 
   public async getComments(postId: string, limit: number): Promise<IComment[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/comments`);
+      const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/comments?limit=${limit}`);
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+        await this.handleError(response);
+       }
+      const data = await response.json();
+      return data;
+    } catch (error: any) {
+      console.error('Fetch error:', error);
+      throw error;
+    }
+  }
+
+  public async addComment(postId: string, userId: number, content: string): Promise<IComment> {
+    try {
+      const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId, content}),
+      });
+
+      if (!response.ok) {
+        await this.handleError(response);
+       }
+
       const data = await response.json();
       return data;
     } catch (error: any) {

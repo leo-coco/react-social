@@ -44,10 +44,33 @@ export class PostController extends BaseController {
 
   public getComments = async (req: Request, res: Response) => {
     const postId = req.params['postId'];
+    const limit = req.query['limit'] as string;
     if (postId) {
       try {
-        const users = await this.service.getComments(parseInt(postId));
+        const users = await this.service.getComments(parseInt(postId), parseInt(limit));
         res.json(users);
+      }
+      catch (e: unknown) {
+        this.returnPrismaError(res, e, 'Error getting comments');
+      }
+    }
+  }
+
+  public addComment = async (req: Request, res: Response) => {
+    const postId = req.params['postId'];
+    const { userId, content } = req.body;
+
+    if (!content || content.trim() === '') {
+      this.returnError(res, {
+        httpStatus: 422,
+        message: "Content is required to add a comment",
+      })
+    }
+
+    if (postId) {
+      try {
+        const comment = await this.service.addComment(parseInt(postId), parseInt(userId), content);
+        res.json(comment);
       }
       catch (e: unknown) {
         this.returnPrismaError(res, e, 'Error getting comments');

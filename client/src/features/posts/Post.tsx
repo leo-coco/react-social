@@ -43,9 +43,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
 
   const handleAddCommentSuccess = (newComment: IComment) => {
     setShowComment(false);
-    const cacheKey = enableAllComment ? `comments-fetchAll-postId=${post.id}&_limit=1` : `comments-fetchAll-postId=${post.id}&_limit=100`;
-  
-    queryClient.setQueryData([cacheKey], (oldData: IComment[]) => {
+    queryClient.setQueryData(['posts', post.id, 'comments', limit ], (oldData: IComment[]) => {
       return [newComment, ...(oldData || [])];
     });
     

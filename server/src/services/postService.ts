@@ -8,6 +8,7 @@ export interface IPostService {
   getAllPosts(userId: number): Promise<Post[]>
   createPost(data: any): Promise<Post>
   getComments(postId: number, limit?: number): Promise<Comment[]>
+  addComment(postId: number, userId: number, content: string): Promise<Comment>
 }
 
 export class PostService extends BaseService implements IPostService {
@@ -17,6 +18,7 @@ export class PostService extends BaseService implements IPostService {
       where: {
         userId: userId,
       },
+      orderBy: [{createdAt: 'desc'}],
     });
   }
 
@@ -40,10 +42,24 @@ export class PostService extends BaseService implements IPostService {
             },
         },
     },
+    orderBy: [{createdAt: 'desc'}],
       where: {
         postId: postId,
       },
       take: limit,
+    });
+  }
+
+  public async addComment(postId: number, userId: number, content: string) {
+    return await prisma.comment.create({
+      data: {
+        content,
+        post: { connect: { id: postId } },
+        user: { connect: { id: userId } },
+      },
+      include: {
+        user: true, // So user data is available, so we don't have to invalidate the whole list of comments for a post
+      },
     });
   }
 }

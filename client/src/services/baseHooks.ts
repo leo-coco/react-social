@@ -4,10 +4,8 @@ import { BaseService } from './baseService';
 export const useFetchAll = <T>(entity: string, queryParams = "") => {
   const service = new BaseService<T>(entity); 
 
-  const queryKey = queryParams ? `${entity}-fetchAll-${queryParams}` : `${entity}-fetchAll`
-
   return useQuery({
-    queryKey: [queryKey],
+    queryKey: [entity, queryParams],
     queryFn: () => service.getAll(queryParams),
   })
 };
@@ -16,7 +14,7 @@ export const useFetchById = <T>(entity: string, id: string) => {
   const service = new BaseService<T>(entity);
 
   return useQuery({
-    queryKey: [`${entity}-fetchById`],
+    queryKey: [`${entity}`, id],
     queryFn: () => service.getById(id),
   })
 };

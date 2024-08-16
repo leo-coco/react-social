@@ -1,6 +1,3 @@
-import type { ResponseError } from "../../types/error";
-
-
 export interface IBaseService<T> {
   getById(id:string): Promise<T>
   getAll(queryParams: string): Promise<T[]>
@@ -68,7 +65,7 @@ export class BaseService<T> implements IBaseService<T>{
     }
   }
 
-  private async handleError(response: any) {
+  protected async handleError(response: any) {
     const errorResponse = await response.json();
     const errorMessage = errorResponse.message || `Error: ${errorResponse.status} ${errorResponse.statusText}`;
     const errorDetails = errorResponse.error || null;
