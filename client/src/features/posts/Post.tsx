@@ -78,7 +78,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           description={post.content}
         />
       </Card>
-      <Card>
+      <Card  style={{ maxHeight: '300px', overflowY: 'auto' }}>
       {isPending && <Skeleton active paragraph={{ rows: 3 }} />}
       {error && <div>Error...</div>}
       {!isPending && !error && <Comments comments={comments} />}
