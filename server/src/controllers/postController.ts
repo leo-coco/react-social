@@ -22,30 +22,6 @@ export class PostController extends BaseController {
     this.service = service;
   }
 
-  public getPosts = async (req: Request, res: Response) => {
-    const userId = req.query['userId'] as string | undefined;
-    if (userId) {
-      try {
-        const posts = await this.service.getAllPostsWithDetails(parseInt(userId));
-        
-        const postsWithDetails: PostWithDetails[] = posts.map(post => ({
-          id: post.id,
-          title: post.title,
-          content: post.content,
-          userId: post.userId,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
-          hasLiked: post.likes.length > 0,
-          likeCount: post._count.likes,
-        }));
-        res.json(postsWithDetails);
-      }
-      catch (e: unknown) {
-        this.returnPrismaError(res, e, 'Error getting posts');
-      }
-    }
-  }
-
   public getCursorBasedPosts = async (req: Request, res: Response) => {
     const userId = req.query['userId'] as string | undefined;
     const cursor = req.query['cursor'] as string;
@@ -102,7 +78,7 @@ export class PostController extends BaseController {
         res.json(users);
       }
       catch (e: unknown) {
-        this.returnPrismaError(res, e, 'Error getting comments');
+        return this.returnPrismaError(res, e, 'Error getting comments');
       }
     }
   }
