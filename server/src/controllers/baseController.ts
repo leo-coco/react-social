@@ -15,16 +15,4 @@ export class BaseController {
   protected returnError(res: Response, {httpStatus, message, error = ""}: {httpStatus: number, message: string; error?: string}) {
     return res.status(httpStatus).json({ message, error: error })
   }
-  
-  protected getErrorMessage = (e: unknown): string => {
-    let errorMessage = 'An unexpected error occurred';
-    if (e instanceof Error) {
-      errorMessage = e.message;
-    } else if (typeof e === 'string') {
-      errorMessage = e;
-    } else {
-      errorMessage = JSON.stringify(e);
-    }
-    return errorMessage;
-  }
 }

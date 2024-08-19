@@ -50,8 +50,6 @@ export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
     }
   };
 
-
-
   return (
     <Button
       key="like"
@@ -60,7 +58,7 @@ export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
       onClick={() => handleLike(postId)}
       type={liked ? 'primary' : 'default'} 
     >
-     Like {count}
+     Like
     </Button>
   );
 }
