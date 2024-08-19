@@ -89,7 +89,10 @@ export class PostService extends BaseService implements IPostService {
           id: 'asc',
         },
         cursor: {
-          id: cursor,
+          id: (cursor),
+        },
+        where: {
+          userId: userId,
         },
         include: {
           likes: {
