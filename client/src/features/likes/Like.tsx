@@ -28,7 +28,11 @@ export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
     mutationFn: ({ postId, userId }: { postId: string; userId: number }) => {
       const service = new PostService();
       setIsLoading(true);
-      return service.like(postId, userId);
+      if (!liked) {
+        return service.like(postId, userId);
+      }
+      return service.dislike(postId, userId);
+    
     },
     onSuccess: (data: any) => {
       setLiked(prevLiked => !prevLiked);

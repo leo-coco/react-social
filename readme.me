@@ -1,3 +1,24 @@
+This Docker Compose file configures a PostgreSQL database that can be accessed via port 5432 of the Docker container. Also note that the database credentials are currently set as africa (user name) and village_people (user password). You are free to adjust these credentials to your preferred user and password. Save and exit the file.
+
+With this setup in place, go ahead and launch the PostgreSQL database server with the following command:
+
+$    docker-compose up -d
+Hey, it may take a while because the docker image will be pulled and launched, unless you have ran it before. Sip your tea ☕️ now. When it's done, run:
+
+$    docker ps 
+The output of this command will be similar to this:
+
+
+CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS        PORTS                                       NAMES
+7621fce68710   postgres:13   "docker-entrypoint.s…"   13 hours ago   Up 13 hours   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   playlist_postgres_1
+
+
+
+
+
+
+
+
 bun install
 
 
@@ -6,3 +27,6 @@ npx prisma migrate dev --name init
 
 bun client:dev
 bun server:dev
+
+
+If CORS error make sur to check index.ts and update the port accordingly   origin: 'http://localhost:5173', // The front end URL

@@ -46,6 +46,35 @@ export class PostController extends BaseController {
     }
   }
 
+  public getCursorBasedPosts = async (req: Request, res: Response) => {
+    const userId = req.query['userId'] as string | undefined;
+    const cursor = req.query['cursor'] as string;
+
+    if (userId) {
+      try {
+        const response = await this.service.getCursorBasedPostsWithDetails(parseInt(userId), parseInt(cursor));
+        
+        const postsWithDetails: PostWithDetails[] = response.posts.map(post => ({
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          userId: post.userId,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          hasLiked: post.likes.length > 0,
+          likeCount: post._count.likes,
+        }));
+        res.json({
+          entities: postsWithDetails,
+          meta: response.meta,
+        });
+      }
+      catch (e: unknown) {
+        this.returnPrismaError(res, e, 'Error getting posts');
+      }
+    }
+  }
+
   public createPost = async (req: Request, res: Response) => {
     const { title, content } = req.body;
 
@@ -125,6 +154,21 @@ export class PostController extends BaseController {
       }
       catch (e: unknown) {
         this.returnPrismaError(res, e, 'Error liking a post');
+      }
+    }
+  }
+
+  public dislike = async (req: Request, res: Response) => {
+    const postId = req.params['postId'];
+    const userId = req.body['userId'];
+
+    if (postId && userId) {
+      try {
+        const likes = await this.service.dislike(parseInt(postId), userId);
+        res.json(likes);
+      }
+      catch (e: unknown) {
+        this.returnPrismaError(res, e, 'Error disliking a post');
       }
     }
   }

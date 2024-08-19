@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { BaseService } from './baseService'; 
 
 export const useFetchAll = <T>(entity: string, queryParams = "") => {
@@ -7,6 +7,19 @@ export const useFetchAll = <T>(entity: string, queryParams = "") => {
   return useQuery({
     queryKey: [entity, queryParams],
     queryFn: () => service.getAll(queryParams),
+  })
+};
+
+export const useFetchCursorBasedEntities = <T>(entity: string, queryParams = "") => {
+  const service = new BaseService<T>(entity);
+
+  return useInfiniteQuery({
+    queryKey: [entity, queryParams],
+    queryFn: ({ pageParam: cursor }) => {
+      return service.getCursorBasedEntities(`${queryParams}&cursor=${cursor}`)
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.meta.nextCursor,
   })
 };
 

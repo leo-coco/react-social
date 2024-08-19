@@ -17,14 +17,24 @@ type PostWithLikesAndCount = {
   };
 };
 
+interface CursorBasedPostsResponse  {
+  posts: PostWithLikesAndCount[],
+  meta: {
+    nextCursor: number | null;
+    hasMore: boolean;
+  }
+}
+
 export interface IPostService {
   getAllPosts(userId: number): Promise<Post[]>
   getAllPostsWithDetails(userId: number): Promise<PostWithLikesAndCount[]>
+  getCursorBasedPostsWithDetails(userId: number, cursor: number): Promise<CursorBasedPostsResponse>
   createPost(data: any): Promise<Post>
   getComments(postId: number, limit?: number): Promise<Comment[]>
   addComment(postId: number, userId: number, content: string): Promise<Comment>
   getLikes(postId: number): Promise<Like[]>
   like(userId: number, postId: number): Promise<Like>
+  dislike(userId: number, postId: number): Promise<Like>
 }
 
 export class PostService extends BaseService implements IPostService {
@@ -46,6 +56,9 @@ export class PostService extends BaseService implements IPostService {
   public async getAllPostsWithDetails(userId: number) {
     try {
       return await prisma.post.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
         include: {
           likes: {
             where: {
@@ -67,6 +80,52 @@ export class PostService extends BaseService implements IPostService {
       throw this.handlePrismaError(e)
     }
    
+  }
+
+  public async getCursorBasedPostsWithDetails(userId: number, cursor: number) {
+    const take = 2;
+    try {
+      const posts = await prisma.post.findMany({
+        orderBy: {
+          id: 'asc',
+        },
+        cursor: {
+          id: cursor,
+        },
+        include: {
+          likes: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              id: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+        take: take + 1, // Fetch one more than needed to check for next page
+      });
+      
+      const hasNextPage = posts.length > take;
+      const nextCursor = hasNextPage ? posts[posts.length - 1].id : null;
+
+      const data = hasNextPage ? posts.slice(0, -1) : posts;
+      
+      return {
+        posts: data,
+        meta: {
+          nextCursor,
+        },
+      }
+
+    } catch (e) {
+      throw this.handlePrismaError(e)
+    }
   }
 
   public async createPost(data: Prisma.PostCreateInput) {
@@ -134,8 +193,6 @@ export class PostService extends BaseService implements IPostService {
   }
 
   public async like(postId: number, userId: number) {
-    console.log(userId);
-    console.log(postId);
     try {
       return await prisma.like.create({
         data: {
@@ -144,6 +201,21 @@ export class PostService extends BaseService implements IPostService {
           },
           post: {
             connect: { id: postId }
+          },
+        },
+      });
+    } catch (e) {
+      throw this.handlePrismaError(e);
+    }
+  }
+
+  public async dislike(postId: number, userId: number) {
+    try {
+      return await prisma.like.delete({
+        where: {
+          userId_postId: {
+            userId: userId,
+            postId: postId,
           },
         },
       });
