@@ -1,4 +1,6 @@
-# Project Setup Guide
+# React Social
+
+This project gave me the opportunity to get up to speed with React and its ecosystem. I also get the chance to experiment TantStack Query while managing the server in Node.js, using Express.js
 
 This README provides instructions on how to set up and run the project, including launching the PostgreSQL database server, installing dependencies, and running the development server.
 
