@@ -3,9 +3,6 @@ import { useFetchAll, useFetchCursorBasedEntities } from "../../services/baseHoo
 import type { IPost, PostWithDetails } from "./post.type";
 import { PostService } from "./postAPI";
 
-
-
-
 export const useFetchPostsByUser = (userId: number) => {
   return useFetchAll<IPost>('posts', `userId=${userId}`);
 };
@@ -14,7 +11,7 @@ export const useFetchCursorPostsByUser = (userId: number) => {
   return useFetchCursorBasedEntities<PostWithDetails>('posts', `userId=${userId}`);
 };
 
-export const useFetchPostComments = (postId: string, limit = 0) => {
+export const useFetchPostComments = (postId: number, limit = 0) => {
     const service = new PostService(); 
 
     return useQuery({

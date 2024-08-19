@@ -21,7 +21,6 @@ interface CursorBasedPostsResponse  {
   posts: PostWithLikesAndCount[],
   meta: {
     nextCursor: number | null;
-    hasMore: boolean;
   }
 }
 

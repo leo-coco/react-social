@@ -10,7 +10,7 @@ export type PostWithDetails = {
   id: number;
   title: string;
   content: string;
-  userId: number;
+  userId: number | string;
   createdAt: Date;
   updatedAt: Date;
   hasLiked: boolean;

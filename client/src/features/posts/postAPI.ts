@@ -13,7 +13,7 @@ export class PostService extends BaseService<IPost> {
     return this.getAll(`userId=${userId}`)
   }
 
-  public async getComments(postId: string, limit: number): Promise<IComment[]> {
+  public async getComments(postId: number, limit: number): Promise<IComment[]> {
     try {
       const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/comments?limit=${limit}`);
       if (!response.ok) {
@@ -49,7 +49,7 @@ export class PostService extends BaseService<IPost> {
     }
   }
 
-  public async like(postId: string, userId: number)  {
+  public async like(postId: number, userId: number)  {
     try {
       const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/like`, {
         method: 'POST',
@@ -71,7 +71,7 @@ export class PostService extends BaseService<IPost> {
     }
   }
 
-  public async dislike(postId: string, userId: number)  {
+  public async dislike(postId: number, userId: number)  {
     try {
       const response = await fetch(`${this.baseUrl}/${this.entity}/${postId}/like`, {
         method: 'DELETE',

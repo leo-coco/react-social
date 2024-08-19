@@ -95,18 +95,4 @@ export class BaseService<T> implements IBaseService<T>{
     const errorDetails = errorResponse.error || null;
     throw new Error(errorMessage, {cause: errorDetails});
   }
-  
-
-  public delete() {
-    // EMPTY
-  }
-
-  public patch() {
-    // EMPTY
-  }
-
-  public put () {
-    // EMPTY
-  }
-
 }

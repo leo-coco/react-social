@@ -10,10 +10,6 @@ const menuItems = [
     label: <Link to="/">Home</Link>,
   },
   {
-    key: '2',
-    label: <Link to="/chat">Chat</Link>,
-  },
-  {
     key: '3',
     label:   <div style={{ marginLeft: 'auto', color: 'white' }}>
     Logged in as: <UsersContainer />

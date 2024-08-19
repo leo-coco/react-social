@@ -8,7 +8,7 @@ import { useUser } from "../users/UserContext";
 import useNotification from "../../hooks/useNotification";
 
 interface LikeProps {
-  postId: string;
+  postId: number;
   count: number;
   hasLiked: boolean;
 }
@@ -25,7 +25,7 @@ export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
   }, [hasLiked]);
 
   const likePost = useMutation({
-    mutationFn: ({ postId, userId }: { postId: string; userId: number }) => {
+    mutationFn: ({ postId, userId }: { postId: number; userId: number }) => {
       const service = new PostService();
       setIsLoading(true);
       if (!liked) {
@@ -44,8 +44,10 @@ export const Like: React.FC<LikeProps> = ({postId, count, hasLiked}) => {
     },
   });
   
-  const handleLike = (postId: string) => {
-    likePost.mutate({ postId, userId: userContext?.id });
+  const handleLike = (postId: number) => {
+    if (userContext) {
+      likePost.mutate({ postId, userId: userContext.id });
+    }
   };
 
 
