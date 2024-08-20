@@ -24,7 +24,7 @@ describe("BaseService", () => {
 
       const data = await service.getAll("userId=1")
       expect(data).toEqual(mockArrayData)
-      expect(fetch).toHaveBeenCalledWith("mock-api/posts?userId=1")
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/posts?userId=1")
     })
 
     it("should fetch all data without query params", async () => {
@@ -35,7 +35,7 @@ describe("BaseService", () => {
 
       const data = await service.getAll()
       expect(data).toEqual(mockArrayData)
-      expect(fetch).toHaveBeenCalledWith("mock-api/posts")
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/posts")
     })
 
     it("should throw an error if the fetch fails", async () => {
@@ -62,7 +62,7 @@ describe("BaseService", () => {
 
       const data = await service.getById("1")
       expect(data).toEqual(mockData)
-      expect(fetch).toHaveBeenCalledWith("mock-api/posts/1")
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/posts/1")
     })
 
     it("should throw an error if the fetch fails", async () => {
@@ -89,7 +89,7 @@ describe("BaseService", () => {
 
       const data = await service.post({ name: "Test" })
       expect(data).toEqual(mockData)
-      expect(fetch).toHaveBeenCalledWith("mock-api/posts", {
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

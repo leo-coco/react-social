@@ -78,6 +78,18 @@ bun client:dev
 bun server:dev
 ```
 
+## Tests
+
+This project includes unit tests for both the client and server. While I focused primarily on unit testing, there's potential to expand with integration tests or end-to-end tests in the future
+
+```bash
+bun client:test
+```
+
+```bash
+bun server:test
+```
+
 ## FAQ
 
 ### CORS Error

@@ -17,7 +17,7 @@ export class BaseService<T> implements IBaseService<T> {
 
   constructor(pEntity: string) {
     this.entity = pEntity
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || "mock-api"
+    this.baseUrl = import.meta.env.VITE_API_BASE_URL
   }
   public async getAll(queryParams?: string): Promise<T[]> {
     try {

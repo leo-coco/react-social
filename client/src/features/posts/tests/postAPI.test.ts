@@ -29,7 +29,7 @@ describe("PostService", () => {
       const posts = await postService.getByUser(userId);
   
       expect(postService.getAll).toHaveBeenCalledWith(`userId=${userId}`);
-      expect(posts).toEqual([]]);
+      expect(posts).toEqual([]);
     });
   })
 
@@ -37,7 +37,7 @@ describe("PostService", () => {
     it("should call correct URL", async () => {
       fetch.mockResolvedValue(createFetchResponse([]))
       const comments = await postService.getComments(1, 5);
-      expect(fetch).toHaveBeenCalledWith("undefined/undefined/1/comments?limit=5");
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/undefined/1/comments?limit=5");
       expect(comments).toEqual([]);
     })
   })
@@ -49,7 +49,7 @@ describe("PostService", () => {
       const userId = 5;
       const content = 'content';
       const res = await postService.addComment(postId, userId, content);
-      expect(fetch).toHaveBeenCalledWith("undefined/undefined/1/comments", {
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/undefined/1/comments", {
         body:JSON.stringify({ userId, content }),
         method: "POST",
           headers: {
@@ -66,7 +66,7 @@ describe("PostService", () => {
       const postId = 1;
       const userId = 5;
       const res = await postService.like(postId, userId);
-      expect(fetch).toHaveBeenCalledWith("undefined/undefined/1/like", {
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/undefined/1/like", {
         body:JSON.stringify({ userId }),
         method: "POST",
           headers: {
@@ -83,7 +83,7 @@ describe("PostService", () => {
       const postId = 1;
       const userId = 5;
       const res = await postService.unlike(postId, userId);
-      expect(fetch).toHaveBeenCalledWith("undefined/undefined/1/like", {
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/undefined/1/like", {
         body:JSON.stringify({ userId }),
         method: "DELETE",
           headers: {
