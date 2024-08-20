@@ -1,18 +1,17 @@
-import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import { PrismaClient } from "@prisma/client"
+import { faker } from "@faker-js/faker"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function seed() {
- // Clear existing data and reset IDs
- await prisma.$executeRaw`TRUNCATE TABLE "Like" RESTART IDENTITY CASCADE`;
- await prisma.$executeRaw`TRUNCATE TABLE "Comment" RESTART IDENTITY CASCADE`;
- await prisma.$executeRaw`TRUNCATE TABLE "Post" RESTART IDENTITY CASCADE`;
- await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
-
+  // Clear existing data and reset IDs
+  await prisma.$executeRaw`TRUNCATE TABLE "Like" RESTART IDENTITY CASCADE`
+  await prisma.$executeRaw`TRUNCATE TABLE "Comment" RESTART IDENTITY CASCADE`
+  await prisma.$executeRaw`TRUNCATE TABLE "Post" RESTART IDENTITY CASCADE`
+  await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`
 
   // Create users
-  const users = [];
+  const users = []
   for (let i = 0; i < 5; i++) {
     const user = await prisma.user.create({
       data: {
@@ -20,15 +19,14 @@ async function seed() {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
       },
-    });
-    users.push(user);
+    })
+    users.push(user)
   }
-
 
   // Create posts, comments, and likes
   for (const user of users) {
-    const postCount = faker.number.int({ min: 2, max: 20 });
-    const posts = [];
+    const postCount = faker.number.int({ min: 2, max: 20 })
+    const posts = []
 
     for (let i = 0; i < postCount; i++) {
       const post = await prisma.post.create({
@@ -37,53 +35,53 @@ async function seed() {
           content: faker.lorem.paragraphs(),
           userId: user.id,
         },
-      });
-      posts.push(post);
+      })
+      posts.push(post)
 
       // Create comments for the post
-      const commentCount = faker.number.int({ min: 0, max: 10 });
+      const commentCount = faker.number.int({ min: 0, max: 10 })
       for (let j = 0; j < commentCount; j++) {
         await prisma.comment.create({
           data: {
             content: faker.lorem.sentence(),
             postId: post.id,
-            userId: users[faker.number.int({ min: 0, max: users.length - 1 })].id,
+            userId:
+              users[faker.number.int({ min: 0, max: users.length - 1 })].id,
           },
-        });
+        })
       }
 
+      const likeCount = faker.number.int({ min: 0, max: users.length - 1 })
+      const likedUsers = new Set<number>()
 
-const likeCount = faker.number.int({ min: 0, max: users.length - 1 });
-const likedUsers = new Set<number>();
+      for (let k = 0; k < likeCount; k++) {
+        let randomUserId
+        do {
+          randomUserId =
+            users[faker.number.int({ min: 0, max: users.length - 1 })].id
+        } while (randomUserId === user.id || likedUsers.has(randomUserId))
 
-for (let k = 0; k < likeCount; k++) {
-  let randomUserId;
-  do {
-    randomUserId = users[faker.number.int({ min: 0, max: users.length - 1 })].id;
-  } while (randomUserId === user.id || likedUsers.has(randomUserId));
+        likedUsers.add(randomUserId)
 
-  likedUsers.add(randomUserId);
-
-  await prisma.like.create({
-    data: {
-      userId: randomUserId,
-      postId: post.id,
-    },
-  });
-}
-
+        await prisma.like.create({
+          data: {
+            userId: randomUserId,
+            postId: post.id,
+          },
+        })
+      }
     }
   }
 
-  console.log('Seeding completed.');
+  console.log("Seeding completed.")
 }
 
 await seed()
   .catch(e => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-    console.log("Disconnected from database.");
-  });
+    await prisma.$disconnect()
+    console.log("Disconnected from database.")
+  })

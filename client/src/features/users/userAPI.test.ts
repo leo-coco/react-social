@@ -1,21 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BaseService } from '../../services/baseService';
-import { UserService } from './userAPI';
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { BaseService } from "../../services/baseService"
+import { UserService } from "./userAPI"
 
 // Mocking BaseService class
-vi.mock('../../services/baseService', () => ({
+vi.mock("../../services/baseService", () => ({
   BaseService: vi.fn(),
-}));
+}))
 
-describe('UserService', () => {
+describe("UserService", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+  })
 
   it('should extend BaseService with IUser type and entity "users"', () => {
-    const userService = new UserService();
+    const userService = new UserService()
 
-    expect(BaseService).toHaveBeenCalledWith('users');
-    expect(userService).toBeInstanceOf(BaseService);
-  });
-});
+    expect(BaseService).toHaveBeenCalledWith("users")
+    expect(userService).toBeInstanceOf(BaseService)
+  })
+})

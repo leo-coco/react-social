@@ -1,10 +1,10 @@
-import type React from 'react';
-import { Avatar } from 'antd';
-import './Comment.css';
-import type { IComment } from './comment.type';
+import type React from "react"
+import { Avatar } from "antd"
+import "./Comment.css"
+import type { IComment } from "./comment.type"
 
 interface CommentProps {
-  comment: IComment;
+  comment: IComment
 }
 
 export const Comment: React.FC<CommentProps> = ({ comment }) => {
@@ -16,9 +16,11 @@ export const Comment: React.FC<CommentProps> = ({ comment }) => {
         className="comment-avatar"
       />
       <div className="comment-content">
-        <div className="comment-author">{comment.user.firstName} {comment.user.lastName}</div>
+        <div className="comment-author">
+          {comment.user.firstName} {comment.user.lastName}
+        </div>
         <div className="comment-body">{comment.content}</div>
       </div>
     </div>
-  );
-};
+  )
+}

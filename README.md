@@ -17,21 +17,26 @@ Use Docker Compose to launch the PostgreSQL database server.
 ### Steps:
 
 1. **Start the PostgreSQL server:**
+
    ```bash
    docker-compose up -d
+
+   ```
 
 1. **Verify the server is running::**
    ```bash
    docker ps
-   
+
+   ```
 
 ## 2. Install dependencies
 
 Navigate to the root of your project and install all required dependencies using Bun.
 
-  ```bash
-   bun install
-   ```
+```bash
+ bun install
+```
+
 ## 3. Set Up Prisma
 
 The project uses Prisma as the ORM. You need to generate the Prisma client and run migrations.
@@ -39,16 +44,22 @@ The project uses Prisma as the ORM. You need to generate the Prisma client and r
 ### Steps:
 
 1. **Nagivate to the server folder**
+
    ```bash
    cd server
+
+   ```
 
 2. **Generate the Prisma client:**
    ```bash
    npx prisma generate
+   ```
 3. **Run database migrations:**
    ```bash
    npx prisma migrate dev --name init
-   
+
+   ```
+
 ## 4. Run the Development Server
 
 The project is split into two parts: the client and the server. **From the root folder**, use Bun to start both in development mode.

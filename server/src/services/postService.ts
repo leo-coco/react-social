@@ -1,33 +1,35 @@
-import { prisma } from '../db/prisma'
-import type { Prisma} from "@prisma/client";
-import type { Post, Comment, Like } from "@prisma/client";
-import { BaseService } from './baseService';
+import { prisma } from "../db/prisma"
+import type { Prisma } from "@prisma/client"
+import type { Post, Comment, Like } from "@prisma/client"
+import { BaseService } from "./baseService"
 
 type PostWithLikesAndCount = {
-  id: number;
-  title: string;
-  content: string;
-  userId: number;
-  createdAt: Date;
-  updatedAt: Date;
-  likes: Array<{ id: number }>;
+  id: number
+  title: string
+  content: string
+  userId: number
+  createdAt: Date
+  updatedAt: Date
+  likes: Array<{ id: number }>
   _count: {
-    likes: number;
-    comments: number;
-  };
-};
+    likes: number
+    comments: number
+  }
+}
 
-interface CursorBasedPostsResponse  {
-  posts: PostWithLikesAndCount[],
+interface CursorBasedPostsResponse {
+  posts: PostWithLikesAndCount[]
   meta: {
-    nextCursor: number | null;
+    nextCursor: number | null
   }
 }
 
 export interface IPostService {
   getAllPosts(userId: number): Promise<Post[]>
-  getAllPostsWithDetails(userId: number): Promise<PostWithLikesAndCount[]>
-  getCursorBasedPostsWithDetails(userId: number, cursor: number): Promise<CursorBasedPostsResponse>
+  getCursorBasedPostsWithDetails(
+    userId: number,
+    cursor: number,
+  ): Promise<CursorBasedPostsResponse>
   createPost(data: any): Promise<Post>
   getComments(postId: number, limit?: number): Promise<Comment[]>
   addComment(postId: number, userId: number, content: string): Promise<Comment>
@@ -37,59 +39,28 @@ export interface IPostService {
 }
 
 export class PostService extends BaseService implements IPostService {
-
   public async getAllPosts(userId: number) {
     try {
       return await prisma.post.findMany({
         where: {
           userId: userId,
         },
-        orderBy: [{createdAt: 'desc'}],
-      });
-    }
-    catch (e) {
+        orderBy: [{ createdAt: "desc" }],
+      })
+    } catch (e) {
       throw this.handlePrismaError(e)
     }
-  }
-
-  public async getAllPostsWithDetails(userId: number) {
-    try {
-      return await prisma.post.findMany({
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          likes: {
-            where: {
-              userId: userId,
-            },
-            select: {
-              id: true,
-            },
-          },
-          _count: {
-            select: {
-              likes: true,
-              comments: true,
-            },
-          },
-        },
-      });
-    }  catch (e) {
-      throw this.handlePrismaError(e)
-    }
-   
   }
 
   public async getCursorBasedPostsWithDetails(userId: number, cursor: number) {
-    const take = 2;
+    const take = 2
     try {
       const posts = await prisma.post.findMany({
         orderBy: {
-          id: 'asc',
+          id: "asc",
         },
         cursor: {
-          id: (cursor),
+          id: cursor,
         },
         where: {
           userId: userId,
@@ -111,20 +82,19 @@ export class PostService extends BaseService implements IPostService {
           },
         },
         take: take + 1, // Fetch one more than needed to check for next page
-      });
-      
-      const hasNextPage = posts.length > take;
-      const nextCursor = hasNextPage ? posts[posts.length - 1].id : null;
+      })
 
-      const data = hasNextPage ? posts.slice(0, -1) : posts;
-      
+      const hasNextPage = posts.length > take
+      const nextCursor = hasNextPage ? posts[posts.length - 1].id : null
+
+      const data = hasNextPage ? posts.slice(0, -1) : posts
+
       return {
         posts: data,
         meta: {
           nextCursor,
         },
       }
-
     } catch (e) {
       throw this.handlePrismaError(e)
     }
@@ -134,7 +104,7 @@ export class PostService extends BaseService implements IPostService {
     try {
       return await prisma.post.create({
         data,
-      });
+      })
     } catch (e) {
       throw this.handlePrismaError(e)
     }
@@ -145,23 +115,21 @@ export class PostService extends BaseService implements IPostService {
       return await prisma.comment.findMany({
         include: {
           user: {
-              select: {
-                  firstName: true,
-                  lastName: true,
-              },
+            select: {
+              firstName: true,
+              lastName: true,
+            },
           },
-      },
-      orderBy: [{createdAt: 'desc'}],
+        },
+        orderBy: [{ createdAt: "desc" }],
         where: {
           postId: postId,
         },
         take: limit,
-      });
-    }
-    catch (e) {
+      })
+    } catch (e) {
       throw this.handlePrismaError(e)
     }
-  
   }
 
   public async addComment(postId: number, userId: number, content: string) {
@@ -175,11 +143,10 @@ export class PostService extends BaseService implements IPostService {
         include: {
           user: true, // So user data is available, so we don't have to invalidate the whole list of comments for a post
         },
-      });
+      })
     } catch (e) {
       throw this.handlePrismaError(e)
     }
-   
   }
 
   public async getLikes(postId: number) {
@@ -187,7 +154,7 @@ export class PostService extends BaseService implements IPostService {
       return prisma.like.findMany({
         where: {
           postId: postId,
-        }
+        },
       })
     } catch (e) {
       throw this.handlePrismaError(e)
@@ -199,15 +166,15 @@ export class PostService extends BaseService implements IPostService {
       return await prisma.like.create({
         data: {
           user: {
-            connect: { id: userId }
+            connect: { id: userId },
           },
           post: {
-            connect: { id: postId }
+            connect: { id: postId },
           },
         },
-      });
+      })
     } catch (e) {
-      throw this.handlePrismaError(e);
+      throw this.handlePrismaError(e)
     }
   }
 
@@ -220,9 +187,9 @@ export class PostService extends BaseService implements IPostService {
             postId: postId,
           },
         },
-      });
+      })
     } catch (e) {
-      throw this.handlePrismaError(e);
+      throw this.handlePrismaError(e)
     }
   }
 }

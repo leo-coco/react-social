@@ -1,55 +1,57 @@
-import type React from 'react';
-import { useState } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
-import { usePost } from '../../services/baseHooks';
-import type { IPost } from './post.type';
-import { useUser } from '../users/UserContext';
-import { useQueryClient } from '@tanstack/react-query';
-import useNotification from '../../hooks/useNotification';
+import type React from "react"
+import { useState } from "react"
+import { Modal, Form, Input, Button } from "antd"
+import { usePost } from "../../services/baseHooks"
+import type { IPost } from "./post.type"
+import { useUser } from "../users/UserContext"
+import { useQueryClient } from "@tanstack/react-query"
+import useNotification from "../../hooks/useNotification"
 
-
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const AddPostModal: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const userContext = useUser();
-  const queryClient = useQueryClient();
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const userContext = useUser()
+  const queryClient = useQueryClient()
 
-  const { openNotification } = useNotification();
+  const { openNotification } = useNotification()
 
-  const { mutate: createPost } = usePost<IPost>('posts');
+  const { mutate: createPost } = usePost<IPost>("posts")
 
   const showModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
-  const handleSubmit = async (values: { title: string, body: string }) => {
-    setIsLoading(true);
+  const handleSubmit = async (values: { title: string; body: string }) => {
+    setIsLoading(true)
     const newPost = {
       userId: userContext?.id,
       title: values.title,
       content: values.body,
-    } as IPost;
+    } as IPost
 
     createPost(newPost, {
       onSuccess: (newPost: IPost) => {
-        queryClient.setQueryData(['posts', `userId=${userContext?.id}` ], (oldData: IPost[]) => {
-          return [newPost, ...(oldData || [])];
-        });
-        setIsLoading(false);
-        setIsModalVisible(false);
+        queryClient.setQueryData(
+          ["posts", `userId=${userContext?.id}`],
+          (oldData: IPost[]) => {
+            return [newPost, ...(oldData || [])]
+          },
+        )
+        setIsLoading(false)
+        setIsModalVisible(false)
       },
-      onError: (error) => {
-        setIsLoading(false);
-        openNotification('error', error.message)
+      onError: error => {
+        setIsLoading(false)
+        openNotification("error", error.message)
       },
-    });
+    })
   }
 
   const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   return (
     <>
@@ -65,17 +67,19 @@ const AddPostModal: React.FC = () => {
         <Form
           layout="vertical"
           onFinish={handleSubmit}
-          initialValues={{ title: '', body: '' }}
+          initialValues={{ title: "", body: "" }}
         >
           <Form.Item
             name="title"
-            rules={[{ required: true, message: 'Please enter a title' }]}
+            rules={[{ required: true, message: "Please enter a title" }]}
           >
             <Input placeholder="Enter title" />
           </Form.Item>
           <Form.Item
             name="body"
-            rules={[{ required: true, message: 'Please enter the post content!' }]}
+            rules={[
+              { required: true, message: "Please enter the post content!" },
+            ]}
           >
             <TextArea rows={4} placeholder="Enter your post here..." />
           </Form.Item>
@@ -87,7 +91,7 @@ const AddPostModal: React.FC = () => {
         </Form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default AddPostModal;
+export default AddPostModal

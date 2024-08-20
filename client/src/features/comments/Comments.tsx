@@ -1,17 +1,14 @@
-import { Comment } from "./Comment";
-import type { IComment } from "./comment.type";
+import { Comment } from "./Comment"
+import type { IComment } from "./comment.type"
 
 interface CommentsProps {
-  comments: IComment[];
+  comments: IComment[]
 }
 
-export const Comments: React.FC<CommentsProps> = ({comments}) => {
-
+export const Comments: React.FC<CommentsProps> = ({ comments }) => {
   return (
     <>
-      {comments?.map(comment => (
-        <Comment key={comment.id} comment={comment} />
-      ))}
-  </>
-  );
+      {comments?.map(comment => <Comment key={comment.id} comment={comment} />)}
+    </>
+  )
 }

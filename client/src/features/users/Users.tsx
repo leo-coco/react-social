@@ -1,15 +1,14 @@
-import { useCallback, useEffect } from "react";
-import withLoadingAndError from "../../hoc/withLoadingAndError";
-import type { IUser } from "./user.type";
-import { useSetUser } from "./UserContext";
-import { useFetchAllUsers } from "./userHooks";
-import { Select } from "antd";
+import { useCallback, useEffect } from "react"
+import withLoadingAndError from "../../hoc/withLoadingAndError"
+import type { IUser } from "./user.type"
+import { useSetUser } from "./UserContext"
+import { useFetchAllUsers } from "./userHooks"
+import { Select } from "antd"
 
 interface UsersProps {
-  users: IUser[];
-  onChange: (userId:string) => void;
+  users: IUser[]
+  onChange: (userId: string) => void
 }
-
 
 export const Users: React.FC<UsersProps> = ({ users, onChange }) => {
   return (
@@ -21,31 +20,32 @@ export const Users: React.FC<UsersProps> = ({ users, onChange }) => {
         value: user.id.toString(),
         label: user.firstName,
       }))}
-    >
-    </Select>
-  );
-};
+    ></Select>
+  )
+}
 
-const UsersWithLoadingAndError = withLoadingAndError(Users);
+const UsersWithLoadingAndError = withLoadingAndError(Users)
 export const UsersContainer = () => {
-  const { isPending, error, data: users } = useFetchAllUsers();
-  const setUserContext =  useSetUser();
+  const { isPending, error, data: users } = useFetchAllUsers()
+  const setUserContext = useSetUser()
 
-  const setUser = useCallback((userId: string) => {
-    if (users) {
-      const user = users.find(u => u.id.toString() === userId.toString());
-      if (user) {
-        setUserContext(user);
+  const setUser = useCallback(
+    (userId: string) => {
+      if (users) {
+        const user = users.find(u => u.id.toString() === userId.toString())
+        if (user) {
+          setUserContext(user)
+        }
       }
-    }
-  }, [users, setUserContext]);
-  
+    },
+    [users, setUserContext],
+  )
 
   useEffect(() => {
     if (users) {
-      setUser(users[0].id.toString());
+      setUser(users[0].id.toString())
     }
-  }, [users, setUser]);
+  }, [users, setUser])
 
   return (
     <UsersWithLoadingAndError
@@ -54,5 +54,5 @@ export const UsersContainer = () => {
       users={users || []}
       onChange={setUser}
     />
-  );
+  )
 }
