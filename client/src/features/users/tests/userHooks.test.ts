@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
-import { useFetchAll, useFetchById } from "../../services/baseHooks"
+import { useFetchAll, useFetchById } from "../../../services/baseHooks"
 import { renderHook } from "@testing-library/react"
-import { useFetchAllUsers, useFetchUserById } from "./userHooks"
+import { useFetchAllUsers, useFetchUserById } from "../userHooks"
 
-vi.mock("../../services/baseHooks", () => ({
+vi.mock("../../../services/baseHooks", () => ({
   useFetchAll: vi.fn(),
   useFetchById: vi.fn(),
 }))
