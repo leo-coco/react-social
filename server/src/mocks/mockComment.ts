@@ -7,9 +7,9 @@ export const mockComments = () => [
     createdAt: new Date(),
     updatedAt: new Date(),
     "user": {
-            "firstName": "Eldora",
-            "lastName": "Stehr"
-        }
+      "firstName": "Eldora",
+      "lastName": "Stehr"
+    }
   },
   {
     id: 2,
@@ -19,9 +19,9 @@ export const mockComments = () => [
     createdAt: new Date(),
     updatedAt: new Date(),
     "user": {
-            "firstName": "Eldora",
-            "lastName": "Stehr"
-        }
+      "firstName": "Eldora",
+      "lastName": "Stehr"
+    }
   },
   {
     id: 3,
@@ -31,9 +31,9 @@ export const mockComments = () => [
     createdAt: new Date(),
     updatedAt: new Date(),
     "user": {
-            "firstName": "John",
-            "lastName": "John"
-        }
+      "firstName": "John",
+      "lastName": "John"
+    }
   },
 ]
 
