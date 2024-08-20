@@ -27,7 +27,7 @@ export const useFetchById = <T>(entity: string, id: string) => {
   const service = new BaseService<T>(entity);
 
   return useQuery({
-    queryKey: [`${entity}`, id],
+    queryKey: [entity, id],
     queryFn: () => service.getById(id),
   })
 };
