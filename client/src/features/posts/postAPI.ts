@@ -82,7 +82,7 @@ export class PostService extends BaseService<IPost> {
     }
   }
 
-  public async dislike(postId: number, userId: number) {
+  public async unlike(postId: number, userId: number) {
     try {
       const response = await fetch(
         `${this.baseUrl}/${this.entity}/${postId}/like`,

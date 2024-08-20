@@ -8,12 +8,11 @@ import type { PrismaFormattedError } from "../../../types/prismaError"
 const mockService: IPostService = {
   getCursorBasedPostsWithDetails: vi.fn(),
   createPost: vi.fn(),
-  getAllPosts: vi.fn(),
   getComments: vi.fn(),
   addComment: vi.fn(),
   getLikes: vi.fn(),
   like: vi.fn(),
-  dislike: vi.fn(),
+  unlike: vi.fn(),
 }
 
 const controller = new PostController(mockService)

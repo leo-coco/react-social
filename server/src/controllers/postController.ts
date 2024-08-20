@@ -140,13 +140,13 @@ export class PostController extends BaseController {
     }
   }
 
-  public dislike = async (req: Request, res: Response) => {
+  public unlike = async (req: Request, res: Response) => {
     const postId = req.params["postId"]
     const userId = req.body["userId"]
 
     if (postId && userId) {
       try {
-        const likes = await this.service.dislike(parseInt(postId), userId)
+        const likes = await this.service.unlike(parseInt(postId), userId)
         res.json(likes)
       } catch (e: unknown) {
         this.returnPrismaError(res, e, "Error disliking a post")

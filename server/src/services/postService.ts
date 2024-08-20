@@ -25,7 +25,6 @@ interface CursorBasedPostsResponse {
 }
 
 export interface IPostService {
-  getAllPosts(userId: number): Promise<Post[]>
   getCursorBasedPostsWithDetails(
     userId: number,
     cursor: number,
@@ -35,22 +34,10 @@ export interface IPostService {
   addComment(postId: number, userId: number, content: string): Promise<Comment>
   getLikes(postId: number): Promise<Like[]>
   like(userId: number, postId: number): Promise<Like>
-  dislike(userId: number, postId: number): Promise<Like>
+  unlike(userId: number, postId: number): Promise<Like>
 }
 
 export class PostService extends BaseService implements IPostService {
-  public async getAllPosts(userId: number) {
-    try {
-      return await prisma.post.findMany({
-        where: {
-          userId: userId,
-        },
-        orderBy: [{ createdAt: "desc" }],
-      })
-    } catch (e) {
-      throw this.handlePrismaError(e)
-    }
-  }
 
   public async getCursorBasedPostsWithDetails(userId: number, cursor: number) {
     const take = 2
@@ -178,7 +165,7 @@ export class PostService extends BaseService implements IPostService {
     }
   }
 
-  public async dislike(postId: number, userId: number) {
+  public async unlike(postId: number, userId: number) {
     try {
       return await prisma.like.delete({
         where: {

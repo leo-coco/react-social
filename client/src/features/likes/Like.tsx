@@ -31,7 +31,7 @@ export const Like: React.FC<LikeProps> = ({ postId, count, hasLiked }) => {
       if (!liked) {
         return service.like(postId, userId)
       }
-      return service.dislike(postId, userId)
+      return service.unlike(postId, userId)
     },
     onSuccess: (data: any) => {
       setLiked(prevLiked => !prevLiked)

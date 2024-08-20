@@ -7,7 +7,7 @@ export interface IUserService {
 }
 
 
-      export class UserService extends BaseService implements IUserService {
+export class UserService extends BaseService implements IUserService {
   public async getAll() {
     try {
       return await prisma.user.findMany()
