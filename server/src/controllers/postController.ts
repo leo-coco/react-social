@@ -106,7 +106,7 @@ export class PostController extends BaseController {
           parseInt(userId),
           content,
         )
-        res.json(comment)
+        res.status(201).json(comment);
       } catch (e: unknown) {
         this.returnPrismaError(res, e, "Error adding a comment")
       }
@@ -132,8 +132,8 @@ export class PostController extends BaseController {
 
     if (postId && userId) {
       try {
-        const likes = await this.service.like(parseInt(postId), userId)
-        res.json(likes)
+        const like = await this.service.like(parseInt(postId), userId)
+         res.status(201).json(like)
       } catch (e: unknown) {
         this.returnPrismaError(res, e, "Error liking a post")
       }
@@ -146,8 +146,8 @@ export class PostController extends BaseController {
 
     if (postId && userId) {
       try {
-        const likes = await this.service.unlike(parseInt(postId), userId)
-        res.json(likes)
+        const like = await this.service.unlike(parseInt(postId), userId)
+        res.json(like)
       } catch (e: unknown) {
         this.returnPrismaError(res, e, "Error disliking a post")
       }

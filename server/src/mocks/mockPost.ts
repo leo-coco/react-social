@@ -24,3 +24,19 @@ export const mockPosts = () => [
     updatedAt: new Date(),
   },
 ]
+
+export const mockPostsWithDetails = () => mockPosts().map(p => ({
+  ...p,
+  likes: [{id: 1}, {id: 2}],
+  _count: {
+    likes: 2,
+    comments: 3,
+  }
+}))
+
+export const mockCursorBasedPostsReponse = (nextCursor = 2) => ({
+  posts: mockPostsWithDetails(),
+  meta: {
+    nextCursor,
+  }
+})
