@@ -2,7 +2,6 @@ export interface ICursorBasedEntities<T> {
   entities: T[]
   meta: {
     nextCursor: number | null
-    hasMore: boolean
   }
 }
 

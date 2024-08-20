@@ -9,6 +9,18 @@ import useNotification from "../../hooks/useNotification"
 
 const { TextArea } = Input
 
+interface Page<T> {
+  entities: T[];
+  meta: {
+    nextCursor: number;
+  }
+}
+
+interface PaginatedPosts {
+  pages: Page<IPost>[];
+  pageParams: Array<string>;
+}
+
 const AddPostModal: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -35,8 +47,23 @@ const AddPostModal: React.FC = () => {
       onSuccess: (newPost: IPost) => {
         queryClient.setQueryData(
           ["posts", `userId=${userContext?.id}`],
-          (oldData: IPost[]) => {
-            return [newPost, ...(oldData || [])]
+          (oldData: PaginatedPosts) => {
+            if (!oldData) return;
+
+            const updatedPages = oldData.pages.map((page, index) => {
+              if (index === 0) {
+                return {
+                  ...page,
+                  entities: [newPost, ...page.entities],
+                };
+              }
+              return page;
+            });
+    
+            return {
+              ...oldData,
+              pages: updatedPages,
+            };
           },
         )
         setIsLoading(false)
